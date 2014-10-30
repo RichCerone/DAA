@@ -21,8 +21,8 @@ public class tsp
     {   
          
         tsp tsp = new tsp();
-        tsp.readfile("mini1.txt");
-       /* float matrix[][] = tsp.generateMatrix();
+        tsp.readfile("brute10.txt");
+        float matrix[][] = tsp.generateMatrix();
         for(int i=0; i<tsp.xPos.length; i++){
             for(int j=0; j<tsp.xPos.length; j++){
                  
@@ -32,11 +32,8 @@ public class tsp
             System.out.println();
              
         }
-        
         System.out.println();
         tsp.NearestNeighbor();
-        */
-        tsp.nearest();
     }
      
     /**
@@ -71,7 +68,7 @@ public class tsp
                         y.add(parts[2]);
                     }
                 }
-                if(line.contains("NODE_COORD_SECTION")||line.contains("NODE_COORD_SELECTION"))
+                if(line.contains("NODE_COORD_SECTION"))
                 {
                     found = true;
                 }
@@ -106,16 +103,16 @@ public class tsp
      * @return returns the cost matrix of all
      * the cities.
      */
-    private int[][] generateMatrix()
+    private float[][] generateMatrix()
     {
         int[] index = new int[xPos.length];
         index = populate();
-        int costs[][] = new int[xPos.length][xPos.length];
+        float costs[][] = new float[xPos.length][xPos.length];
         for(int i=0; i<xPos.length; i++)
         {
             for(int j=0; j<xPos.length ; j++)
             {
-                costs[i][j] = (int) Math.sqrt(Math.pow((xPos[index[i]] - xPos[index[j]]),2)+Math.pow((yPos[index[i]] - yPos[index[j]]),2));
+                costs[i][j] = (float) Math.sqrt(Math.pow((xPos[index[i]] - xPos[index[j]]),2)+Math.pow((yPos[index[i]] - yPos[index[j]]),2));
             }
         }
         return costs;
@@ -294,7 +291,7 @@ public class tsp
     private void NearestNeighbor()
     {
         int[] index = new int[xPos.length];
-        int[][] costs;
+        float costs[][];
         int start = 0;
         int curr = start;
         float bestweight = 0;
@@ -375,63 +372,5 @@ public class tsp
                 print_best(visited,besttour);
             }
         }
-    }
-    
-    public void nearest(){
-    	
-    	int costs[][] = new int[xPos.length][xPos.length];
-    	costs = generateMatrix();
-    	 for(int i=0; i<xPos.length; i++){
-             for(int j=0; j<xPos.length; j++){
-                  
-                 System.out.print(costs[i][j] + " ");
-                  
-             }
-             System.out.println();
-              
-         }
-         int start = 0;
-    	 int current = start;
-    	 int bestInRow = 0;
-    	 int next = 0;
-    	 ArrayList visitedcities = new ArrayList<Integer>();
-    	 
-    	// for(int x=0; x < xPos.length; x++){    
-    	 	visitedcities.add(start);										// calculates n tours
-    		 for(int y=0; y < xPos.length-1; y++){         // loops through 2D array
-    			 for(int z=0; z < xPos.length; z++){     //
-    				 if(z == 0){
-    					if(costs[current][z] == 0 && !visitedcities.contains(z)){
-		    				 bestInRow = costs[current][z + 1];
-		    				 next = z + 1;
-    					} else {
-    						 while(visitedcities.contains(z)) 
-                             {
-                                 z++;
-                             }
-    						bestInRow = costs[current][z];
-    						next = z;
-    					}
-    				 } else if((z > 0) && (costs[current][z] != 0) && (costs[current][z] < bestInRow)
-    						 	&& !visitedcities.contains(z)) {
-    					 bestInRow = costs[current][z];
-    					 next = z;
-    				 }
-    				 if(z == xPos.length - 1){
-    					 visitedcities.add(next);
-    					 current = next;
-    					 if(y == xPos.length - 1){
-    						 bestInRow = costs[current][(int) visitedcities.get(0)];
-    					 }
-    			
-    				 }
-    			 }
-    			 System.out.println("best " + bestInRow);
-    			 System.out.println("next " + next);
-    			 System.out.println();
-    		 }
-    		 
-    	// }
-    	
     }
 }
