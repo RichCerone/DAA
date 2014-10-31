@@ -16,13 +16,28 @@ public class tsp
     int[] bestX;
     int[] bestY;
     int[] bestPath;
+     
+    int[][] edges;
  
+    ArrayList vert_a = new ArrayList<Integer>();
+    ArrayList vert_b = new ArrayList<Integer>();
+     
+    ArrayList<String> x = new ArrayList<String>();
+    ArrayList<String> y = new ArrayList<String>();
     public static void main(String[] args)
     {   
          
         tsp tsp = new tsp();
-        tsp.readfile("brute10.txt");
-        float matrix[][] = tsp.generateMatrix();
+     /* tsp.readf_hcp("petersen.txt");
+        for(int i=0; i<tsp.vert_a.size(); i++){
+            System.out.print(tsp.vert_a.get(i) + " ");
+            System.out.println(tsp.vert_b.get(i));
+        }
+        tsp.populateEdge();
+        */
+         
+        tsp.readfile("mini1.txt");
+        double matrix[][] = tsp.generateMatrix();
         for(int i=0; i<tsp.xPos.length; i++){
             for(int j=0; j<tsp.xPos.length; j++){
                  
@@ -33,7 +48,11 @@ public class tsp
              
         }
         System.out.println();
-        tsp.NearestNeighbor();
+         
+        tsp.nearest();
+        System.out.println();
+        //tsp.NearestNeighbor();
+         
     }
      
     /**
@@ -44,8 +63,7 @@ public class tsp
     private void readfile(String fileName)
     {
         File file = new File(fileName);
-        ArrayList<String> x = new ArrayList<String>();
-        ArrayList<String> y = new ArrayList<String>();
+         
         boolean found = false;
         try
         {
@@ -95,6 +113,66 @@ public class tsp
         }
  
     }
+    @SuppressWarnings("unchecked")
+    private void readf_hcp(String filename){
+         
+        try{
+            File file = new File(filename);
+            BufferedReader bfrd = new BufferedReader(new FileReader(file));
+            String current_line;
+            boolean startread = false;
+            while((current_line = bfrd.readLine()) != null){
+                //System.out.println(current_line);
+                if(current_line.contains("DIMENSION :")){
+                    String[] splt = current_line.split("DIMENSION :");
+                    String dim = splt[1].trim();
+                    int dimension = Integer.parseInt(dim);
+                     edges = new int[dimension+1][dimension+1];
+                }
+                if(startread){
+                    if(current_line.contains("EOF") || current_line.contains("-1"))
+                        break;
+                    else{
+                        String vertices[] = current_line.split("\\s+");
+                        if(vertices.length > 1){
+                            String d1 = vertices[1].trim();
+                            String d2 = vertices[2].trim();
+                            int dim_a = Integer.parseInt(d1);
+                            int dim_b = Integer.parseInt(d2);
+                            vert_a.add(dim_a);
+                            vert_b.add(dim_b);
+                        }
+                    }
+                }
+                if(current_line.contains("EDGE_DATA_SECTION")){
+                    startread = true;
+                }
+            }
+             
+        } catch(IOException exp){
+             
+        }
+    }
+    private void populateEdge(){
+        for(int i=0; i<vert_a.size()-1; i++){
+                edges[(int) vert_b.get(i)][(int) vert_a.get(i)] = 1;
+            }
+         
+        for(int a=0; a<edges.length; a++){
+            for(int b=0; b<edges[a].length; b++){
+                if(edges[a][b] == 0){
+                    edges[a][b] = 2;
+                } else {    
+                    }
+                }
+            }
+            for(int j=0; j<edges.length; j++){
+                for(int x=0; x<edges[j].length; x++){
+                    System.out.print(edges[j][x] + " ");
+                }
+                System.out.println();
+            }
+        }
      
     /**
      * Populates the cost matrix with the edge
@@ -103,16 +181,16 @@ public class tsp
      * @return returns the cost matrix of all
      * the cities.
      */
-    private float[][] generateMatrix()
+    private double[][] generateMatrix()
     {
         int[] index = new int[xPos.length];
         index = populate();
-        float costs[][] = new float[xPos.length][xPos.length];
+        double costs[][] = new double[xPos.length][xPos.length];
         for(int i=0; i<xPos.length; i++)
         {
             for(int j=0; j<xPos.length ; j++)
             {
-                costs[i][j] = (float) Math.sqrt(Math.pow((xPos[index[i]] - xPos[index[j]]),2)+Math.pow((yPos[index[i]] - yPos[index[j]]),2));
+                costs[i][j] = (double) Math.sqrt(Math.pow((xPos[index[i]] - xPos[index[j]]),2)+Math.pow((yPos[index[i]] - yPos[index[j]]),2));
             }
         }
         return costs;
@@ -129,7 +207,7 @@ public class tsp
      * @return bestTour cost out of all 
      * runs.
      */
-    private float tourCost(int startCity,float bestTour,float tourCost, ArrayList visited, int best_x[], int best_y[])
+    private double tourCost(int startCity,double bestTour,double tourCost, ArrayList visited, int best_x[], int best_y[])
     {
         if(startCity == 0)
         {
@@ -170,7 +248,7 @@ public class tsp
      * @return returns the array holding the best tour of 
      * x-coordinates.
      */
-    private int[] bestX(int startCity, ArrayList index, int best_x[], float bestTour, float tourCost){
+    private int[] bestX(int startCity, ArrayList index, int best_x[], double bestTour, double tourCost){
         if(startCity == 0)
         {
             bestTour = tourCost;
@@ -206,7 +284,7 @@ public class tsp
      * @return returns the array holding the best tour of 
      * y-coordinates.
      */
-    private int[] bestY(int startCity, ArrayList index, int best_y[], float bestTour, float tourCost){
+    private int[] bestY(int startCity, ArrayList index, int best_y[], double bestTour, double tourCost){
         if(startCity == 0)
         {
             bestTour = tourCost;
@@ -255,7 +333,7 @@ public class tsp
      * y-coordinates.
      * @param bestTour the current best tour.
      */
-    private void print_best(ArrayList index, float bestTour){
+    private void print_best(ArrayList index, double bestTour){
         System.out.println();
         for(int m=0; m<index.size(); m++)
         {
@@ -291,11 +369,11 @@ public class tsp
     private void NearestNeighbor()
     {
         int[] index = new int[xPos.length];
-        float costs[][];
+        double costs[][];
         int start = 0;
         int curr = start;
-        float bestweight = 0;
-        float besttour = 0;
+        double bestweight = 0;
+        double besttour = 0;
         int[] best_x = new int[index.length];
         int[] best_y = new int[index.length];
         int next = 0;
@@ -307,6 +385,7 @@ public class tsp
         //Iteration of each tour.
         for(int startCity = 0; startCity < index.length; startCity++)
         {
+            curr = startCity;
             visited.clear();
             visited.add(start);
             //Iteration of each row (best city).
@@ -314,7 +393,7 @@ public class tsp
             for(int nextCity = 0; nextCity < index.length-1; nextCity++)
             {
                 for(int i=0; i < index.length; i++) //Finds best next vertex.
-                {
+                {   
                     if(i == 0)
                     {
                         //Check if city has been visited.
@@ -332,7 +411,7 @@ public class tsp
                             bestweight = costs[curr][i];
                             next = i;
                         }
-                    }
+                    } 
                     else if(costs[curr][i] < bestweight && costs[curr][i] != 0
                             && !visited.contains(i))
                     {
@@ -348,21 +427,23 @@ public class tsp
                             tourcost += bestweight;
                             bestweight = costs[curr][visited.get(0)];
                             start++;
-                            curr = start;
-                            //for(int x=0; x < visited.size(); x++)
-                            //{
-                            //System.out.print(visited.get(x) + " ");
-                            //}
-                            //System.out.println();
                         }
                     }
                 }
                 if(nextCity != index.length - 2){
                 tourcost += bestweight;
+                 
+                 
                 }
                 if(nextCity == index.length - 2)
                 {
+                    for(int r=0; r<index.length; r++){
+                        System.out.print(visited.get(r) + " ");
+                         
+                    }
+                    System.out.println();
                 System.out.println("tourcost : " + tourcost);
+                 
                 }
             }
             besttour = tourCost(startCity,besttour,tourcost, visited, best_x, best_y);
@@ -372,5 +453,72 @@ public class tsp
                 print_best(visited,besttour);
             }
         }
+    }
+     
+    private void nearest(){
+        double besttotal = Integer.MAX_VALUE;
+        double currbest = 0;
+        double thistotal = 0;
+        int removal = 0;
+        double costs[][] = generateMatrix();
+        ArrayList allcities = new ArrayList<Integer>();
+        ArrayList bestTour = new ArrayList<Integer>();
+        ArrayList currentTour;
+        ArrayList remainingCities;
+        for(int i=0; i<x.size(); i++){
+            allcities.add(i+1);
+        }
+        for(int a=0; a<allcities.size(); a++){
+            currbest = 0;
+            int startcity = (int) allcities.get(a);
+            int currentcity = (int) allcities.get(a);
+            currentTour = new ArrayList<Integer>();
+            remainingCities = new ArrayList<Integer>();
+            currentTour.add(startcity);
+             
+                for(int j=0; j<allcities.size(); j++){
+                    if(allcities.get(j) == allcities.get(a)){
+                         
+                    } else {
+                        remainingCities.add(allcities.get(j));
+                    }
+                }
+                while(!remainingCities.isEmpty()){
+                    int nextcity = 0;
+                    thistotal = 0;
+                    double bestpath = Integer.MAX_VALUE;
+                     
+                    for(int c=1; c<= remainingCities.size(); c++){
+                        thistotal = costs[(int) remainingCities.get(c-1)-1][currentcity-1];
+                        if(thistotal < bestpath){
+                            bestpath = thistotal;
+                            nextcity = (int) remainingCities.get(c-1);
+                            removal = c-1;
+                        } else{}
+                    }
+                    currentTour.add(nextcity);
+                    currentcity = nextcity;
+                    remainingCities.remove(removal);
+                    currbest += bestpath;
+                }
+                thistotal = costs[startcity-1][currentcity-1];
+                currentTour.add(startcity);
+                currbest += thistotal;
+                if(currbest <= besttotal){
+                    besttotal = currbest;
+                    bestTour = currentTour;
+                     
+                }
+                if(a == allcities.size()-1){
+                for(int z=0; z<currentTour.size(); z++){
+                    System.out.print(bestTour.get(z) + " ");
+                    }
+                System.out.println();
+                System.out.println("tourcost " + besttotal);
+                }
+                 
+        }
+         
+         
     }
 }
