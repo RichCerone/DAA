@@ -1,0 +1,73 @@
+ private void solve()
+    {
+    	//Generate cost matrix for distances of each city.
+    	double costs[][] = generateMatrix();
+    	double bestTotal = Integer.MAX_VALUE; //Best tour cost.
+    	ArrayList<Integer> bestTour = new ArrayList<Integer>();
+    	//Create all present cities.
+    	cities = createCities();
+    	for(int city = 0; city < cities.length; city++ ) <-- runs n times
+    	{
+    		double currentBest = 0; //Current tour cost.
+    		double total = 0; //total tour cost.
+    		int startCity = cities[city]; //Current start city.
+    		int remove = 0; //City to be removed from the remaining cities array.
+    		int currentCity = cities[city]; //Current city.
+    		ArrayList<Integer>currentTour = new ArrayList<Integer>(); //Current tour.
+    		ArrayList<Integer>remainingCities= new ArrayList<Integer>(); //List of remaining cities.
+    		
+    		currentTour.add(startCity); // Add start city to the tour.
+    		
+    		//Add all cities to remaining cities except the start city.
+    		for(int i = 0; i < cities.length; i++) <-- runs n times
+    		{
+    			if(cities[i] != cities[city])
+    			{
+    				remainingCities.add(cities[i]);
+    			}
+    		}
+    		
+    		//Keep going until there are no more cities left to visit.
+    		while(!remainingCities.isEmpty())
+    		{
+    			int nextCity = 0; //Next best city to visit.
+    			double bestPath = Integer.MAX_VALUE; //Value of the best path 
+    			for(int i = 1; i <= remainingCities.size(); i++) <--runs n-1 times
+    			{
+    				total = costs[remainingCities.get(i-1)-1][currentCity-1];
+    				if(total < bestPath)
+    				{
+    					bestPath = total;
+    					nextCity = remainingCities.get(i-1);
+    					remove = i-1;
+    				}
+    			}
+	    		currentTour.add(nextCity); //Add the next best city to the tour.
+	    		currentCity = nextCity; //Set the next city as the current city.
+	    		remainingCities.remove(remove); //Removes the city visited from the list.
+	    		currentBest += bestPath; //Adds the best path to this tour.
+    		}
+    		//Go back to the start city and finish the tour
+    		total = costs[startCity-1][currentCity-1];
+    		currentTour.add(startCity);
+    		currentBest += total;
+	    	//Check if this is the best tour.
+	    	if(currentBest <= bestTotal)
+	    	{
+	    		bestTotal = currentBest;
+	    		bestTour = currentTour;
+	    	}
+	    	//Check if on the last tour to print out info.
+	    	if(city == cities.length-1)
+	    	{
+	    		System.out.println("Best total: " + bestTotal);
+	    		for(int i = 0; i < bestTour.size(); i++)
+	    		{
+	    			System.out.print(bestTour.get(i) + " ");
+	    		}
+	    	}
+    	}
+    }
+
+
+	Total: n*n*n = O(n^3)
