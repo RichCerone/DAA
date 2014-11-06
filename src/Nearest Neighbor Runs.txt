@@ -1,0 +1,34 @@
+Nearest Neighbor Runs:
+
+a280:
+Best total: 3094.278434464387
+Best Starting City:161
+Time: 509ms
+berlin52:
+Best total: 8182.1915557256725
+Best Starting City: 40
+Time: 55ms
+eil51:
+Best total: 505.77366315481726
+Best Starting City: 47
+Time: 107ms
+eil76:
+Best total: 612.6558228403746
+Best Starting City:4
+Time: 180ms
+korA100:
+Best total: 24698.49657976497
+Best Starting City: 85
+Time: 208ms
+kroC100:
+Best total: 23566.402946427395
+Best Starting City: 38
+Time: 206ms
+kroD100:
+Best total: 24855.799183048162
+Best Starting City: 14
+Time: 203ms
+rd100:
+Best total: 9426.478056759213
+Best Starting City: 81
+Time:105ms
