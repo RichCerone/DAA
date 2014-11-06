@@ -17,7 +17,7 @@ public class Tsp_new
  
     public static void main(String[] args)
     {   
-         
+    	long startTime = System.currentTimeMillis();
         Tsp_new tsp = new Tsp_new();
         tsp.readfile("mini1.txt");
         double matrix[][] = tsp.generateMatrix();
@@ -32,7 +32,8 @@ public class Tsp_new
         }
         System.out.println();
         tsp.solve();
-        
+        long endTime = System.currentTimeMillis();
+        System.out.println(endTime - startTime);
     }
      
     /**
